@@ -1,31 +1,19 @@
+CREATING THREADS:
+
+#include <stdio.h>
 #include <pthread.h>
- #include <stdio.h>
-  #include <stdlib.h> 
-  void* func(void* arg)
-{
-pthread_detach(pthread_self()); 
-printf("Inside the thread\n");
- pthread_exit(NULL);
-}
-void fun()
-{
-pthread_t ptid;
-pthread_create(&ptid, NULL, &func, NULL);
- printf("This line may be printed before thread terminates\n"); 
- if(pthread_equal(ptid, pthread_self()))
-{
-printf("Threads are equal\n");
+
+void *thread_function(void *arg) {
+    int *num = (int *)arg;
+    printf("Thread created with argument: %d\n", *num);
+    pthread_exit(NULL);
 }
 
-else
- 
-printf("Threads are not equal\n"); 
-pthread_join(ptid, NULL);
-printf("This line will be printed after thread ends\n");
-pthread_exit(NULL);
-}
-int main()
-{
-fun();
- return 0;
+int main() {
+    pthread_t tid;
+    int arg = 10;
+    pthread_create(&tid, NULL, thread_function, &arg);
+    pthread_join(tid, NULL);
+    printf("Thread execution completed\n");
+    return 0;
 }
